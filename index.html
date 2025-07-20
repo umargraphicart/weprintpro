@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Umar CRM Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #0d47a1;
+      --secondary: #e91e63;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --danger: #f44336;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --border: #dee2e6;
+      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+      overflow-x: hidden;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    /* Header Styles */
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .logo-icon {
+      font-size: 36px;
+      color: var(--primary);
+    }
+    
+    .app-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    /* Stats Section */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: var(--primary);
+    }
+    
+    .stat-card:nth-child(2)::before {
+      background: var(--success);
+    }
+    
+    .stat-card:nth-child(3)::before {
+      background: var(--warning);
+    }
+    
+    .stat-card:nth-child(4)::before {
+      background: var(--secondary);
+    }
+    
+    .stat-title {
+      font-size: 16px;
+      color: var(--gray);
+      margin-bottom: 10px;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .stat-card:nth-child(2) .stat-value {
+      color: var(--success);
+    }
+    
+    .stat-card:nth-child(3) .stat-value {
+      color: var(--warning);
+    }
+    
+    .stat-card:nth-child(4) .stat-value {
+      color: var(--secondary);
+    }
+    
+    /* Actions */
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #d32f2f;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+    
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Table Styles */
+    .table-container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      margin-bottom: 30px;
+      max-height: 500px;
+      overflow: auto;
+    }
+    
+    .table-header {
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    
+    .search-container {
+      position: relative;
+      width: 300px;
+    }
+    
+    .search-container input {
+      width: 100%;
+      padding: 10px 15px 10px 40px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    
+    .search-container i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+    }
+    
+    /* Enhanced Table with Fixed Header and Actions Column */
+    .table-wrapper {
+      overflow: auto;
+      max-height: 400px;
+      position: relative;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+    
+    thead {
+      background: var(--primary);
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 15;
+    }
+    
+    th {
+      padding: 16px 20px;
+      text-align: left;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      background: var(--primary);
+    }
+    
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+      background: white;
+    }
+    
+    tbody tr:hover {
+      background: #edf4ff;
+    }
+    
+    td {
+      padding: 14px 20px;
+      color: #555;
+      position: relative;
+    }
+    
+    .status {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-block;
+    }
+    
+    .status-active {
+      background: #e8f5e9;
+      color: var(--success);
+    }
+    
+    .status-inactive {
+      background: #ffecb3;
+      color: var(--warning);
+    }
+    
+    .status-pending {
+      background: #e3f2fd;
+      color: var(--primary);
+    }
+    
+    /* Fixed Action Column */
+    .action-cell {
+      text-align: center;
+      position: sticky;
+      right: 0;
+      background: inherit;
+      z-index: 10;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+    }
+    
+    thead .action-cell {
+      z-index: 16;
+      background: var(--primary);
+    }
+    
+    tbody tr .action-cell {
+      z-index: 5;
+    }
+    
+    .edit-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 18px;
+      transition: var(--transition);
+      padding: 5px 10px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .edit-btn:hover {
+      background: rgba(26, 115, 232, 0.1);
+      transform: scale(1.1);
+    }
+    
+    /* Modal Styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+      overflow-y: auto;
+      padding: 20px;
+    }
+    
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-content {
+      background: white;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 15px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      transform: translateY(30px);
+      transition: transform 0.4s ease;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .modal.active .modal-content {
+      transform: translateY(0);
+    }
+    
+    .modal-header {
+      padding: 20px 25px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+    
+    .modal-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .close-modal {
+      font-size: 28px;
+      cursor: pointer;
+      color: #777;
+      transition: color 0.3s;
+    }
+    
+    .close-modal:hover {
+      color: var(--danger);
+    }
+    
+    .modal-body {
+      padding: 25px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    
+    @media (min-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: flex-end;
+      padding: 20px 25px;
+      border-top: 1px solid var(--border);
+      position: sticky;
+      bottom: 0;
+      background: white;
+      z-index: 10;
+    }
+    
+    /* Loading & States */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(26, 115, 232, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      font-size: 18px;
+      color: var(--gray);
+      margin-top: 15px;
+    }
+    
+    .error-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .error-icon {
+      font-size: 48px;
+      color: var(--danger);
+      margin-bottom: 20px;
+    }
+    
+    /* Footer */
+    .app-footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--gray);
+      font-size: 14px;
+    }
+    
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+      transform: translateX(120%);
+      transition: transform 0.4s ease;
+      z-index: 1001;
+      max-width: 350px;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification.success {
+      background: var(--success);
+    }
+    
+    .notification.error {
+      background: var(--danger);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .actions {
+        justify-content: flex-start;
+        width: 100%;
+      }
+      
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+      
+      .table-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+      
+      .search-container {
+        width: 100%;
+      }
+      
+      .modal-content {
+        width: 95%;
+      }
+      
+      .modal-body {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <div class="logo-icon">📋</div>
+        <h1 class="app-title">Umar CRM Dashboard</h1>
+      </div>
+      <div class="actions">
+        <button id="add-new" class="btn btn-primary">
+          <i class="fas fa-plus"></i> Add New Entry
+        </button>
+      </div>
+    </header>
+    
+    <!-- Stats -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-title">Total Customers</div>
+        <div class="stat-value" id="total-customers">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Active Projects</div>
+        <div class="stat-value" id="active-projects">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Pending Actions</div>
+        <div class="stat-value" id="pending-actions">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Revenue This Month</div>
+        <div class="stat-value" id="month-revenue">$0</div>
+      </div>
+    </div>
+    
+    <!-- Table -->
+    <div id="table-container" class="table-container">
+      <div class="table-header">
+        <h2>Customer Records</h2>
+        <div class="search-container">
+          <i class="fas fa-search"></i>
+          <input type="text" id="search-input" placeholder="Search customers...">
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table id="customer-table">
+          <thead>
+            <tr id="table-header-row"></tr>
+          </thead>
+          <tbody id="table-body">
+            <tr>
+              <td colspan="10" class="loading">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading customer data from Google Sheets...</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="app-footer">
+      Umar CRM System © 2023 | All Rights Reserved
+    </footer>
+  </div>
+  
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Add New Customer</h2>
+        <span class="close-modal" id="close-modal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="entry-form">
+          <div id="form-fields" class="form-row"></div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="closeModalWindow()">Cancel</button>
+            <button type="submit" id="save-btn" class="btn btn-primary">
+              <i class="fas fa-save"></i> Save
+            </button>
+            <button type="button" id="delete-btn" class="btn btn-danger">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Notification -->
+  <div id="notification" class="notification"></div>
+
+  <script>
+    // Google Apps Script URL for your sheet (REPLACE WITH YOUR NEW DEPLOYMENT URL)
+    const API_URL = "https://script.google.com/macros/s/AKfycbxKw5pCTnFtpQQTW-qZASuAxS8Bb5zQPOH-JTqLfvxhxXZLH22TUpsORU1Vgl7XBQru/exec";
+    
+    // DOM Elements
+    const tableHeaderRow = document.getElementById("table-header-row");
+    const tableBody = document.getElementById("table-body");
+    const modal = document.getElementById("modal");
+    const closeModal = document.getElementById("close-modal");
+    const formFields = document.getElementById("form-fields");
+    const addNewBtn = document.getElementById("add-new");
+    const deleteBtn = document.getElementById("delete-btn");
+    const notification = document.getElementById("notification");
+    const modalTitle = document.getElementById("modal-title");
+    const searchInput = document.getElementById("search-input");
+    
+    // Stats elements
+    const totalCustomers = document.getElementById("total-customers");
+    const activeProjects = document.getElementById("active-projects");
+    const pendingActions = document.getElementById("pending-actions");
+    const monthRevenue = document.getElementById("month-revenue");
+    
+    let headers = [];
+    let allData = [];
+    let currentEditIndex = null;
+    
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', () => {
+      loadData();
+      setupEventListeners();
+    });
+    
+    function setupEventListeners() {
+      addNewBtn.addEventListener("click", () => openModal());
+      closeModal.addEventListener("click", () => closeModalWindow());
+      deleteBtn.addEventListener("click", deleteEntry);
+      searchInput.addEventListener("input", filterTable);
+      
+      // Close modal when clicking outside
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          closeModalWindow();
+        }
+      });
+      
+      // Close modal with escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          closeModalWindow();
+        }
+      });
+      
+      document.getElementById("entry-form").addEventListener("submit", saveEntry);
+    }
+    
+    async function loadData() {
+      try {
+        // Show loading state
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="10" class="loading">
+              <div class="spinner"></div>
+              <div class="loading-text">Loading customer data from Google Sheets...</div>
+            </td>
+          </tr>
+        `;
+        
+        // Fetch data from API
+        const res = await fetch(API_URL + "?action=getData");
+        if (!res.ok) throw new Error('Failed to fetch data');
+        
+        const data = await res.json();
+        
+        // Check if we have valid data
+        if (!data || !Array.isArray(data) || data.length === 0) {
+          throw new Error('No data returned from Google Sheets');
+        }
+        
+        // Extract headers from first row (excluding internal fields)
+        const firstItem = data[0];
+        headers = Object.keys(firstItem).filter(key => 
+          key !== '__rowIndex' && 
+          key !== 'timestamp' && 
+          key !== 'action' && 
+          key !== 'id'
+        );
+        
+        // Store all data
+        allData = data;
+        
+        // Update stats
+        updateStats();
+        
+        // Render the table
+        renderTable();
+      } catch (error) {
+        console.error("Error loading data:", error);
+        showError("Failed to load data from Google Sheets. Please try again later.");
+      }
+    }
+    
+    function updateStats() {
+      totalCustomers.textContent = allData.length;
+      
+      // Calculate active projects
+      const activeCount = allData.filter(item => 
+        item.Status && item.Status.toLowerCase() === 'active'
+      ).length;
+      activeProjects.textContent = activeCount;
+      
+      // Calculate pending actions
+      const pendingCount = allData.filter(item => 
+        item.Status && item.Status.toLowerCase() === 'pending'
+      ).length;
+      pendingActions.textContent = pendingCount;
+      
+      // Calculate revenue
+      const revenue = allData.reduce((total, item) => {
+        const value = parseFloat(item.Value) || 0;
+        return total + value;
+      }, 0);
+      monthRevenue.textContent = '$' + revenue.toLocaleString();
+    }
+    
+    function renderTable() {
+      if (allData.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="${headers.length + 1}" class="error-state">
+              <div class="error-icon">📭</div>
+              <div class="loading-text">No data available in Google Sheet</div>
+              <button class="btn btn-primary" style="margin-top: 20px;" onclick="location.reload()">Refresh</button>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      // Clear table header and body
+      tableHeaderRow.innerHTML = '';
+      tableBody.innerHTML = '';
+      
+      // Create table header
+      headers.forEach(header => {
+        const th = document.createElement("th");
+        th.textContent = header;
+        tableHeaderRow.appendChild(th);
+      });
+      
+      // Add actions header
+      const actionsHeader = document.createElement("th");
+      actionsHeader.className = "action-cell";
+      actionsHeader.textContent = "Actions";
+      tableHeaderRow.appendChild(actionsHeader);
+      
+      // Create table rows
+      allData.forEach((row, index) => {
+        const tr = document.createElement("tr");
+        
+        // Create cells for each header
+        headers.forEach(header => {
+          const td = document.createElement("td");
+          
+          if (header === 'Status' && row[header]) {
+            const statusSpan = document.createElement("span");
+            const status = row[header].toLowerCase();
+            statusSpan.className = `status status-${status}`;
+            statusSpan.textContent = row[header];
+            td.appendChild(statusSpan);
+          } else if (header === 'Value' && row[header]) {
+            // Format currency
+            const value = parseFloat(row[header]) || 0;
+            td.textContent = '$' + value.toLocaleString();
+          } else {
+            td.textContent = row[header] || "";
+          }
+          
+          tr.appendChild(td);
+        });
+        
+        // Add action cell
+        const actionTd = document.createElement("td");
+        actionTd.className = "action-cell";
+        const editBtn = document.createElement("button");
+        editBtn.className = "edit-btn";
+        editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+        editBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openModal(row, index);
+        });
+        actionTd.appendChild(editBtn);
+        tr.appendChild(actionTd);
+        
+        tableBody.appendChild(tr);
+      });
+    }
+    
+    function openModal(row = {}, index = null) {
+      modalTitle.textContent = index !== null ? "Edit Entry" : "Add New Entry";
+      currentEditIndex = index;
+      
+      // Clear previous fields
+      formFields.innerHTML = '';
+      
+      // Create form fields dynamically based on headers
+      headers.forEach(header => {
+        const formGroup = document.createElement("div");
+        formGroup.className = "form-group";
+        
+        const label = document.createElement("label");
+        label.textContent = header;
+        label.htmlFor = header.toLowerCase().replace(/\s+/g, '-');
+        
+        let input;
+        
+        if (header === 'Status') {
+          // Create dropdown for status
+          input = document.createElement("select");
+          input.id = header.toLowerCase().replace(/\s+/g, '-');
+          input.name = header;
+          input.className = "form-control";
+          
+          const options = ['Active', 'Inactive', 'Pending'];
+          options.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option;
+            opt.textContent = option;
+            if (row[header] === option) opt.selected = true;
+            input.appendChild(opt);
+          });
+        } else if (header === 'Value') {
+          // Create number input for value
+          input = document.createElement("input");
+          input.type = "number";
+          input.id = header.toLowerCase().replace(/\s+/g, '-');
+          input.name = header;
+          input.value = row[header] || "";
+          input.className = "form-control";
+          input.min = "0";
+          input.step = "0.01";
+        } else if (header === 'Priority') {
+          // Example of another dropdown
+          input = document.createElement("select");
+          input.id = header.toLowerCase().replace(/\s+/g, '-');
+          input.name = header;
+          input.className = "form-control";
+          
+          const options = ['High', 'Medium', 'Low'];
+          options.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option;
+            opt.textContent = option;
+            if (row[header] === option) opt.selected = true;
+            input.appendChild(opt);
+          });
+        } else {
+          // Create text input for other fields
+          input = document.createElement("input");
+          input.type = "text";
+          input.id = header.toLowerCase().replace(/\s+/g, '-');
+          input.name = header;
+          input.value = row[header] || "";
+          input.className = "form-control";
+        }
+        
+        formGroup.appendChild(label);
+        formGroup.appendChild(input);
+        formFields.appendChild(formGroup);
+      });
+      
+      // Show/hide delete button
+      deleteBtn.style.display = index !== null ? "block" : "none";
+      
+      // Show modal with animation
+      modal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+    
+    function closeModalWindow() {
+      modal.classList.remove("active");
+      document.getElementById("entry-form").reset();
+      document.body.style.overflow = "auto";
+    }
+    
+    async function saveEntry(e) {
+      e.preventDefault();
+      
+      // Collect form data
+      const formData = new FormData(document.getElementById("entry-form"));
+      const entry = {};
+      for (const [key, value] of formData.entries()) {
+        entry[key] = value;
+      }
+      
+      // Add action type
+      entry.action = currentEditIndex !== null ? "update" : "add";
+      
+      // For updates, include row index
+      if (currentEditIndex !== null && allData[currentEditIndex].__rowIndex) {
+        entry.__rowIndex = allData[currentEditIndex].__rowIndex;
+      }
+      
+      try {
+        // Send data to Google Apps Script
+        const response = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify(entry),
+          headers: { "Content-Type": "application/json" }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to save data');
+        }
+        
+        const result = await response.json();
+        if (result.result !== "success") {
+          throw new Error(result.message || 'Operation failed');
+        }
+        
+        showNotification(
+          currentEditIndex !== null 
+            ? "Entry updated successfully!" 
+            : "Entry added successfully!",
+          "success"
+        );
+        
+        // Close modal and refresh data
+        closeModalWindow();
+        await loadData();
+      } catch (error) {
+        console.error("Error saving data:", error);
+        showNotification(
+          "Failed to save data. Please try again.",
+          "error"
+        );
+      }
+    }
+    
+    async function deleteEntry() {
+      if (currentEditIndex === null) return;
+      
+      if (confirm("Are you sure you want to delete this entry?")) {
+        try {
+          const rowIndex = allData[currentEditIndex].__rowIndex;
+          
+          // Send delete request to Google Apps Script
+          const response = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({ 
+              action: "delete", 
+              __rowIndex: rowIndex 
+            }),
+            headers: { "Content-Type": "application/json" }
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to delete entry');
+          }
+          
+          const result = await response.json();
+          if (result.result !== "success") {
+            throw new Error(result.message || 'Delete operation failed');
+          }
+          
+          showNotification("Entry deleted successfully!", "success");
+          
+          // Close modal and refresh data
+          closeModalWindow();
+          await loadData();
+        } catch (error) {
+          console.error("Error deleting data:", error);
+          showNotification(
+            "Failed to delete entry. Please try again.",
+            "error"
+          );
+        }
+      }
+    }
+    
+    function filterTable() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const rows = tableBody.querySelectorAll('tr');
+      
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        let matches = false;
+        
+        cells.forEach(cell => {
+          // Skip the actions cell
+          if (cell.classList.contains('action-cell')) return;
+          
+          if (cell.textContent.toLowerCase().includes(searchTerm)) {
+            matches = true;
+          }
+        });
+        
+        row.style.display = matches ? '' : 'none';
+      });
+    }
+    
+    function showNotification(message, type) {
+      notification.textContent = message;
+      notification.className = `notification ${type} show`;
+      
+      setTimeout(() => {
+        notification.classList.remove("show");
+      }, 3000);
+    }
+    
+    function showError(message) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="${headers.length + 1}" class="error-state">
+            <div class="error-icon">⚠️</div>
+            <div class="loading-text">${message}</div>
+            <button class="btn btn-primary" style="margin-top: 20px;" onclick="location.reload()">Try Again</button>
+          </td>
+        </tr>
+      `;
+    }
+  </script>
+</body>
+</html>
